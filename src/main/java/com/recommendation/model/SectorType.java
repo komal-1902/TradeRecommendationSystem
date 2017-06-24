@@ -1,0 +1,5 @@
+package com.recommendation.model;
+
+public enum SectorType {
+	AUTO, CEMENTS, CIGARETTE, CONSTRUCTION, CONSUMER, ENERGY, FINANCE, IT, MNFG, MEDIA, METALS, PHARMA, SHIPPING, TELECOM
+}

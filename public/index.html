@@ -1,0 +1,510 @@
+<html ng-app="mainApp">
+  <head>
+    <title>Trade Recommendation System</title>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Exo:200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet">
+    <style>
+    .titleBar{
+      left: 0;
+      height: 110px;
+      background-image: url("img/sidebar.jpg");
+      background-size: contain;
+      background-position: right;
+      width: 102%;
+      background-size: cover;
+    }
+    .titleBar h1{
+      color: white;
+      font-family: 'Exo', sans-serif;
+      font-size: 4em;
+      font-weight: bolder;
+    }
+
+    body{
+    }
+
+    .container{
+      height: 200px;
+      width: auto;
+    }
+
+    .sidebar{
+      background-image: url("img/sidebar.jpg");
+      height: 100%;
+      position: absolute;
+      width: 200px;
+      display: block;
+      font-weight: 200;
+      background-size: cover;
+      background-position: center center;
+      font-family: 'Exo', sans-serif;
+      font-size: 15px;
+      float: left;
+      left: 0;
+      top: 111px;
+    }
+
+    .sidebar .nav .active a{
+      color: white;
+    }
+
+    .sidebar .nav{
+      margin-top: 20px;
+      font-family: 'Exo', sans-serif;
+      font-size: 25px;
+      color: white;
+      line-height: 60px;
+      text-align: center;
+    }
+
+    .loginPanel{
+      position: absolute;
+      font-family: inherit;
+      font-size: 30px;
+      background-color: rgb(40, 40, 40);
+      height: 100%;
+      width: 100%;
+      color: white;
+    }
+
+    .dashboardPanel, .profilePanel, .chartsPanel, .watchlistPanel, .tradePanel{
+      position: absolute;
+      width: 1220px;
+      height: 100%;
+      margin-top: 2px;
+      margin-left: 186px;
+      font-family: 'Exo', sans-serif;
+    }
+
+    table, th, td{
+      border: 1px solid grey;
+      padding: 7px;
+      color: white;
+    }
+
+    th{
+      font-family: "Exo", sans-serif;
+      text-transform: uppercase;
+    }
+
+    table tr:nth-child(odd){
+      background-color: rgb(64, 64, 64);
+    }
+
+    table tr:nth-child(even){
+      background-color: rgb(80, 80, 80);
+    }
+
+    .NSEtable{
+      font-family: 'Exo', sans-serif;
+      font-size: 10px;
+      margin-left: 170px;
+      margin-top: 80px;
+    }
+
+    .BoughtTable{
+      font-family: 'Exo', sans-serif;
+      margin-top: 20px;
+      margin-left: 200px;
+    }
+
+    .GainersTable{
+      margin-top: 40px;
+      margin-left: 150px;
+      font-family: 'Exo', sans-serif;
+    }
+
+     .LosersTable{
+      margin-top: 40px;
+      font-family: 'Exo', sans-serif;
+     }
+
+     .WatchListTable{
+       font-family: 'Exo', sans-serif;
+       margin-top: 50px;
+       margin-left: 200px;
+     }
+
+     .titleBar .logout{
+       margin-top: 35px;
+       vertical-align: middle;
+     }
+
+     .titleBar .logout a{
+       font-family: 'Exo', sans-serif;
+       color: white;
+       font-size: 20px;
+     }
+
+     .NSETable .btn{
+       background-color: Transparent;
+       border-color: white;
+     }
+     
+     .loginPanel .btn{
+       background-color: Transparent;
+       border-color: white;
+     }
+     
+          .tradePanel .btn{
+       background-color: Transparent;
+       border-color: white;
+     }
+
+     marquee{
+       font-family: 'Dosis', sans-serif;
+       font-size: 20px;
+     }
+     
+     .loginPanel{
+     font-family: 'Exo', sans-serif;
+     font-size: 25px;
+     }
+     
+     
+     
+    </style>
+  </head>
+  <body>
+    <script type="text/ng-template" id="login.html">
+      <div class="loginPanel row text-center" ng-controller="loginController">
+<div class="text-center" style="margin-top: 50px;">
+Let's get started!
+</div>
+        <form>
+          <p style="margin-top: 200px;">Username: <input style="color: black; margin-left: 20px;" type="text" ng-model="username" required></p>
+          <p style="margin-top: 40px;">Password: <input style="color: black; margin-left: 25px;" type="password" ng-model="password" required></p>
+          <br>
+          <input type="button" class="btn" ng-click="login(username, password)" value="Login"></button>
+          <br>
+          <span class="text-danger">{{error}}</span>
+        </form>
+      </div>
+    </script>
+    <script type="text/ng-template" id="dashboard.html">
+      <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="dashboardPanel col-sm-6">
+              <marquee>All prices are in INR</marquee>
+              <div class="NSEtable">
+                <table border="0">
+                  <caption>{{title}}</caption>
+                  <tr>
+                    <th>Security</th>
+                    <th>Open</th>
+                    <th>Close</th>
+                    <th>Last Traded Price</th>
+                    <th>High</th>
+                    <th>Low</th>
+                    <th>Previous Close</th>
+					<th>Add to Watchlist</th>
+                  </tr>
+                  <tr ng-repeat = "data in dataModel">
+                    <td>{{data.symbol}}</td>
+                    <td>{{data.open}}</td>
+                    <td>{{data.close}}</td>
+                    <td>{{data.ltp}}</td>
+                    <td>{{data.high}}</td>
+                    <td>{{data.low}}</td>
+                    <td>{{data.prevclose}}</td>
+                    <td><input type="button" ng-click="Add(data.symbol)" value="Add" class="btn"></input></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="profile.html">
+      <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="profilePanel col-sm-6">
+              <br>
+              <p style="font-family: 'Exo', sans-serif; margin-left: 10px; font-size: 30px; botton: 0;">Your bought stocks: </p>
+              <div class="BoughtTable">
+                <table border="0">
+                    <tr>
+                    <th>Security</th>
+                    <th>Last Traded Price</th>
+                    <th>Previous Close</th>
+                    <th>Open</th>
+                    <th>Close</th>
+                    <th>High</th>
+                    <th>Low</th>
+                  </tr>
+                  <tr ng-repeat = "data in dataModel">
+                    <td>{{data.symbol}}</td>
+                    <td>{{data.ltp}}</td>
+                    <td>{{data.prevclose}}</td>
+                    <td>{{data.open}}</td>
+                    <td>{{data.close}}</td>
+                    <td>{{data.high}}</td>
+                    <td>{{data.low}}</td>
+                  </tr>
+                </table>
+              </div>
+              <p style="font-family: 'Arial'; font-size: 20px; margin-left: 210px; margin-top: 20px;"><a href="#/trade"><u>Trade stocks now!</u></a></p>
+            </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="topgainers.html">
+      <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="chartsPanel col-sm-6">
+              <p style="font-family: 'Exo', sans-serif; font-size: 30px; margin-top: 30px; margin-left: 15px;">Charts: </p><br>
+              <div>
+                <div class="col-sm-6">
+                  <div class="GainersTable">
+                    <table border="0">
+                      <caption>Top Gainers</caption>
+                      <tr>
+                        <th>Security</th>
+                        <th>Last Traded Price</th>
+                      </tr>
+                      <tr ng-repeat = "data in dataModel">
+                        <td>{{data.symbol}}</td>
+                        <td>{{data.ltp}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="toplosers.html">
+      <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="chartsPanel col-sm-6">
+              <p style="font-family: 'Exo', sans-serif; font-size: 30px; margin-top: 30px; margin-left: 15px;">Charts: </p><br>
+              <div>
+                <div class="col-sm-6 col-sm-offset-5">
+                  <div class="LosersTable">
+                    <table border="0">
+                      <caption>Top Losers</caption>
+                      <tr>
+                        <th>Security</th>
+                        <th>Last Traded Price</th>
+                      </tr>
+                      <tr ng-repeat = "data in dataModel">
+                        <td>{{data.symbol}}</td>
+                        <td>{{data.ltp}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="watchlist.html">
+      <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="watchlistPanel col-sm-6">
+              <p style="margin-left: 10px; margin-top: 20px; font-size: 30px; botton: 0;">Stocks on your watchlist: </p>
+              <div class="WatchListTable">
+                <table border="0">
+                  <tr>
+                    <th>Security</th>
+                    <th>Last Traded Price</th>
+                    <th>Previous Close</th>
+                    <th>Open</th>
+                    <th>Close</th>
+                    <th>High</th>
+                    <th>Low</th>
+                  </tr>
+                  <tr ng-repeat = "data in dataModel">
+                    <td>{{data.symbol}}</td>
+                    <td>{{data.ltp}}</td>
+                    <td>{{data.prevclose}}</td>
+                    <td>{{data.open}}</td>
+                    <td>{{data.close}}</td>
+                    <td>{{data.high}}</td>
+                    <td>{{data.low}}</td>
+                  </tr>
+                </table>
+              </div>
+              <p style="font-family: 'Exo', sans-serif; font-size: 20px; margin-left: 260px; margin-top: 20px;"><a href="#/trade"><u>Trade stocks now!</u></a></p>
+            </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="trade.html">
+            <div class="titleBar row">
+        <div class="col-sm-9 text-left">
+          <h1>Trade Recommendation System</h1>
+        </div>
+        <div class="logout col-sm-3 text-right">
+          <a href="#/">Logout</a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="sidebar col-sm-6">
+              <ul class="nav">
+                <li class="active"><a href="#/dashboard">DASHBOARD</a></li>
+                <li class="active"><a href="#/profile">PROFILE</a></li>
+                <li class="active"><a href="#/topgainers">GAINERS</a></li>
+                <li class="active"><a href="#/toplosers">LOSERS</a></li>
+                <li class="active"><a href="#/watchlist">WATCHLIST</a></li>
+                <li class="active"><a href="#/trade">TRADE</a></li>
+              </ul>
+            </div>
+            <div class="tradePanel col-sm-6">
+              <p style="font-family: 'Exo', sans-serif; font-size: 20px; margin-left: 10px; margin-top:10px;">Select a sector to get trade recommendations:</p><br>
+              <div class="container">
+                <div class="col-sm-5" style="font-family: 'Exo', sans-serif; font-size: 20px;">
+                  <form>
+                    Select Sector: <select ng-model="sectorSelect" ng-change="show(sectorSelect)">
+                      <option value="AUTO">AUTO</option>
+                      <option value="CEMENTS">CEMENTS</option>
+                      <option value="CIGARETTES">CIGARETTES</option>
+                      <option value="CONSUMER">CONSUMER GOODS</option>
+                      <option value="CONSTRUCTION">CONSTRUCTION</option>
+                      <option value="ENERGY">ENERGY</option>
+                      <option value="FINANCE">FINANCE</option>
+                      <option value="IT">IT</option>
+                      <option value="MANUFACTURING">MANUFACTURING</option>
+                      <option value="MEDIA">MEDIA</option>
+                      <option value="METALS">METALS</option>
+                      <option value="PHARMA">PHARMA</option>
+                      <option value="SHIPPING">SHIPPING</option>
+                      <option value="TELECOM">TELECOM</option>
+                    </select>
+                  </form>
+                </div>
+                <div class="col-sm-5 col-sm-offset-5">
+                  <table border="0">
+                    <tr>
+                      <th>Security</th>
+                      <th>Last Traded Price</th>
+					  <th>Open</th>
+					  <th>Close</th>
+					  <th>High</th>
+					  <th>Low</th>
+					  <th>Buy Stocks</th>
+                    </tr>
+                    <tr ng-repeat = "data in dataModel">
+                      <td>{{data.symbol}}</td>
+                      <td>{{data.ltp}}</td>
+                      <td>{{data.open}}</td>
+                      <td>{{data.close}}</td>
+                      <td>{{data.high}}</td>
+                      <td>{{data.low}}</td>
+                      <td><input type="button" ng-click="Add(data.symbol)" class="btn" value="Buy"></input></td>
+                    </tr>
+                  </table>
+<div class="text-center">
+Recommendations are based on the average calculated over the closing price for the past month.
+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+    <div class="container">
+      <ng-view></ng-view>
+    </div>
+  </body>
+</html>
